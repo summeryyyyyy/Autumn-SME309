@@ -1,3 +1,8 @@
-ARM_Pipeline.sim/
-ARM_Pipeline.runs/
-ARM_Pipeline.ip_user_files/
+# Ignore everything
+*
+
+# But don't ignore the source folder
+!ARM_Pipeline.srcs/
+
+# Also, don't ignore the .gitignore file itself
+!.gitignore
