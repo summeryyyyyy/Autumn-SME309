@@ -2,7 +2,7 @@
 *
 
 # But don't ignore the source folder
-!ARM_Pipeline.srcs/
+!source/
 
 # Also, don't ignore the .gitignore file itself
 !.gitignore
