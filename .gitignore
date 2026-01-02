@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# But don't ignore the source folder
+!ARM_Pipeline.srcs/
+
+# Also, don't ignore the .gitignore file itself
+!.gitignore

@@ -8,6 +8,11 @@ module HazardUnit(
     input MemtoRegE,
     input RegWriteE,
     
+    input PCSrcD, PCSrcE, // EARLY BTA   
+    
+    input M_BusyE, // Is Multiplier busy?
+    input [3:0] PendingMulDest,// Which register is the Multiplier writing to? (From ARM Top)
+    
     input PCSrcD, PCSrcE, // EARLY BTA
     
     
@@ -79,6 +84,15 @@ module HazardUnit(
     wire Ldrstall;
     assign Ldrstall = Match_12D_E & MemtoRegE & RegWriteE;
     
+    // 2. Multi-Cycle RAW Hazard (Scoreboarding)
+    // If the Multiplier is running (M_BusyE) AND the instruction in Decode
+    // tries to READ the register that the Multiplier is going to write.
+    wire MulDependency;
+    assign MulDependency = M_BusyE && ((RA1D == PendingMulDest) || (RA2D == PendingMulDest));
+
+    assign StallF = Ldrstall || MulDependency;
+    assign StallD = Ldrstall || MulDependency;
+    assign StallE = 0;
     // Stalling for MCycle
     wire MCycleStall;
     assign MCycleStall = M_BusyE;
@@ -91,6 +105,7 @@ module HazardUnit(
         //    b. Branch Taken in Execute (Late BTA for Conditional)
     assign FlushD = PCSrcD || PCSrcE;    
     assign FlushE = Ldrstall || PCSrcE;
+    assign FlushM = 0;
     assign FlushM = MCycleStall;
 
     /* END: STALL_FLUSH SIGNAL */
