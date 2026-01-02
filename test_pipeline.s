@@ -1,4 +1,4 @@
-    AREA    MYCODE, CODE, READONLY, ALIGN=9
+AREA    MYCODE, CODE, READONLY, ALIGN=9
         ENTRY
 
 ; ------- <code memory (ROM mapped to Instruction Memory) begins>
