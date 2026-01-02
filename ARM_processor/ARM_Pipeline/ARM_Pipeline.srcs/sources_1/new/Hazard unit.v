@@ -1,12 +1,16 @@
 module HazardUnit(
     input [3:0] RA1D,
     input [3:0] RA2D,
+    
     input [3:0] RA1E,
     input [3:0] RA2E,
     input [3:0] WA3E,
     input MemtoRegE,
     input RegWriteE,
-    input PCSrcE,
+    
+    input PCSrcD, PCSrcE, // EARLY BTA
+    
+    
     input M_BusyE,
     input [3:0] WA3M,
     input RegWriteM,
@@ -27,8 +31,11 @@ module HazardUnit(
     output ForwardM
     );
     
-    /* BEGIN: FORWARDING SIGNAL */
+    /* ========================================================== */
+    /*                    FORWARDING LOGIC                        */
+    /* ========================================================== */
 
+    // 1. ALU Forwarding (EX Hazard & MEM Hazard)
     // Data forwarding for DP
     wire Match_1E_M, Match_2E_M, Match_1E_W, Match_2E_W;
     assign Match_1E_M = (RA1E == WA3M);
@@ -59,30 +66,31 @@ module HazardUnit(
         end
     end
 
-    // Data forwarding for Mem
-    assign ForwardM = (RA2M == WA3M) & MemWriteM & MemtoRegW & RegWriteM;
+    // 2. Memory-to-Memory Forwarding (For STR instructions)
+    assign ForwardM = (RA2M == WA3W) & MemWriteM & MemtoRegW & RegWriteM;
 
-    /* END: FORWARDING SIGNAL */
+    /* ========================================================== */
+    /*                   STALL & FLUSH LOGIC                      */
+    /* ========================================================== */
 
-    /* BEGIN: STALL_FLUSH SIGNAL */
-
-    // Stalling for Load and Use
+    // 1. Load-Use Hazard Detection
     wire Match_12D_E;
     assign Match_12D_E = (RA1D == WA3E) | (RA2D == WA3E); 
-    wire Idrstall;
-    assign Idrstall = Match_12D_E & MemtoRegE & RegWriteE;
-    // Stalling for Branch
-    wire BranchStall;
-    assign BranchStall = PCSrcE;
+    wire Ldrstall;
+    assign Ldrstall = Match_12D_E & MemtoRegE & RegWriteE;
+    
     // Stalling for MCycle
     wire MCycleStall;
     assign MCycleStall = M_BusyE;
 
-    assign StallF = Idrstall || MCycleStall;
-    assign StallD = Idrstall || MCycleStall;
+    assign StallF = Ldrstall || MCycleStall;
+    assign StallD = Ldrstall || MCycleStall;
     assign StallE = MCycleStall;
-    assign FlushD = BranchStall;
-    assign FlushE = Idrstall || BranchStall;
+    // 1. Flush Fetch (IF/ID) if:
+        //    a. Branch Taken in Decode (Early BTA)
+        //    b. Branch Taken in Execute (Late BTA for Conditional)
+    assign FlushD = PCSrcD || PCSrcE;    
+    assign FlushE = Ldrstall || PCSrcE;
     assign FlushM = MCycleStall;
 
     /* END: STALL_FLUSH SIGNAL */

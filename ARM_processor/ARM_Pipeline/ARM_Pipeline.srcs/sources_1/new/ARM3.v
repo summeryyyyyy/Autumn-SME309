@@ -115,6 +115,9 @@ module ARM(
    reg [3:0] WA3W;
 
    wire [31:0] ResultW;
+   wire BranchTakenD;
+   wire [31:0] BranchTargetD;    // Calculated Target in Decode
+
 
    //               END: SIGNAL DECLARATIONS
    // ******************************************************
@@ -124,18 +127,28 @@ module ARM(
    //         Fetch: Instruction Fetch and Update PC
    // ====================================================== 
 
-   // PIPLINE 1 
-   ProgramCounter PC1 (
-       .CLK(CLK),
-       .Reset(Reset),
-       .PCSrc(PCSrcE),
-       .Result(OpResultE),
-       .Stall(StallF),
-
-       .PC(PCF),
-       .PC_Plus_4(PC_Plus_4F)
-   );
-
+   // PIPeLINE 1 
+   // ---- EARLY BTA FIX START ----
+       wire [31:0] NextPC;
+       
+       // Priority Mux for PC Source:
+       // 1. Execute Branch (Conditional BNE/BEQ) - Takes priority as it fixes a wrong prediction
+       // 2. Decode Branch (Unconditional B) - Early BTA
+       // 3. Normal PC+4
+       assign NextPC = (PCSrcE)       ? OpResultE :
+                       (BranchTakenD) ? BranchTargetD :
+                       PC_Plus_4F;
+   
+       ProgramCounter PC1 (
+           .CLK(CLK),
+           .Reset(Reset),
+           .PCSrc(1'b1),      // Hardwired to 1: Mux above controls the flow
+           .Result(NextPC),   // Connected to Priority Mux
+           .Stall(StallF),
+           .PC(PCF),
+           .PC_Plus_4(PC_Plus_4F)
+       );
+       // ---- EARLY BTA FIX END ----
    assign PC = PCF;
    assign InstrF = Instr;
 
@@ -155,10 +168,10 @@ module ARM(
    // ======================================================
    //     Decode: Registers Fetch and Instruction Decode
    // ======================================================
-   
    Decoder Decoder1(
        .Instr(InstrD),
        .PCS(PCSD),
+       .BranchTakenD(BranchTakenD), // <--- NEW Output to Hazard Unit
        .RegW(RegWD),
        .MemW(MemWD),
        .MemtoReg(MemtoRegD),
@@ -202,8 +215,14 @@ module ARM(
        .InstrImm(InstrImmD),
        .ExtImm(ExtImmD)
    );
-
-   // PIPLINE 3
+    // ---- EARLY BTA TARGET CALCULATION ----
+       // PC_Plus_4F is the PC of the "Next" instruction relative to Decode.
+       // In ARM, Branch Target = (PC + 8) + Offset.
+       // Since PC_Plus_4F is roughly (PC_Decode + 4), and we need PC+8, 
+       // we use PC_Plus_4F + ExtImmD.
+       assign BranchTargetD = PC_Plus_4F + ExtImmD;
+       
+   // PIPELINE 3
    always @(posedge CLK) begin
        if (FlushE) begin
            InstrE <= 0;
@@ -294,7 +313,8 @@ module ARM(
 
    assign ShE = shControlE[1:0];
    assign Shamt5E = shControlE[6:2];
-   assign ShInE = ForwardBE[1]? OpResultM: (ForwardBE[0]? ResultW: RD2E);
+   assign ShInE = ForwardBE[1]? OpResultM:
+                 (ForwardBE[0]? ResultW: RD2E);
    assign WriteDataE = ShInE;
 
    Shifter Shifter1(
@@ -394,6 +414,7 @@ module ARM(
        .WA3W(WA3W),
        .MemtoRegW(MemtoRegW),
        .RegWriteW(RegWriteW),
+       .PCSrcD(BranchTakenD), // Connect to the new signal
        .StallF(StallF),
        .StallD(StallD),
        .FlushD(FlushD),

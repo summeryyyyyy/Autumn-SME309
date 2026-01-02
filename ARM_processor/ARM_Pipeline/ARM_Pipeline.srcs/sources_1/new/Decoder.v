@@ -8,7 +8,8 @@
 module Decoder(
     input [31:0] Instr,
 	
-    output PCS,             // PC Select (0: PC+4, 1: Branch/PC dest)
+    output PCS,            // PC Select (0: PC+4, 1: Branch/PC dest)
+    output BranchTakenD,    // NEW: Signal to Flush Fetch Stage 
     output reg RegW,        // Register Write Enable
     output reg MemW,        // Memory Write Enable
     output reg MemtoReg,    // 0: ALU Result -> Reg, 1: Mem Data -> Reg
@@ -155,5 +156,26 @@ module Decoder(
     // 1. It is a Branch instruction (B/BL)
     // 2. It is a Data Processing writing to R15 (PC)
     assign PCS = ((Rd == 4'd15) & RegW) | Branch;
+        // =========================================================================
+        //            EARLY BTA & PC LOGIC
+        // =========================================================================
+        
+        // 1. Detect Condition Code "AL" (Always / Unconditional)
+        // Bits [31:28] are the Condition field. 1110 is "AL".
+        wire CondAL;
+        assign CondAL = (Instr[31:28] == 4'b1110);
+    
+        // 2. PCSrcD (Early BTA)
+        // If it is a Branch instruction AND it is Unconditional, we take it NOW.
+ 
+        assign BranchTakenD = Branch & CondAL;
+    
+        // 3. BranchTakenD (Signal to Flush Fetch Stage)
+        // Same as PCSrcD for our purpose.
+    
+        // 4. PCS (General PC Write)
+        // This goes to ID/EX register to warn the Execute stage that PC was modified.
+        // It includes Early Branches OR Late Register Writes (MOV PC, R14).
+        assign PCS = ((Rd == 4'd15) & RegW) | Branch;
    
 endmodule
