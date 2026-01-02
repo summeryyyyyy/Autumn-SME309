@@ -1,34 +1,49 @@
-	.syntax unified
-	.cpu cortex-m3
-	.thumb
-	.global _start
+    AREA    MYCODE, CODE, READONLY, ALIGN=9
+    ENTRY
 
-_start:
-	// 1. RAW Hazard: SUB depends on ADD result (R1)
-	ADD   R1, R2, R3      // R1 = R2 + R3
-	SUB   R4, R1, R5      // R4 = R1 - R5    (RAW hazard)
+; ------- <code memory (ROM mapped to Instruction Memory) begins>
+	LDR R2, constant1; R2=5
+	LDR R3, constant2; R3=6
+	LDR R0, addr1; 810
+	LDR R6, addr2; 820
+	LDR R7,addr3; 830
+    ; (1) RAW Hazard
+    ADD   R1, R2, R3        ; R1 = R2 + R3
+    SUB   R4, R1, R5        ; R4 = R1 - R5    (RAW hazard: uses just-written R1)
 
-	// 2. Memory-to-Memory Copy
-	LDR   R1, [R0]        // R1 = MEM[R0]
-	STR   R1, [R6]        // MEM[R6] = R1
+    ; (2) Memory-to-Memory copy
+    LDR   R1, [R0]          ; R1 = MEM[R0]
+    STR   R1, [R6]          ; MEM[R6] = R1
 
-	// 3. Load-Use Hazard
-	LDR   R5, [R7]        // R5 = MEM[R7]
-	ADD   R8, R5, R9      // R8 = R5 + R9    (Uses value just loaded - hazard)
+    ; (3) Load-and-Use Hazard
+    LDR   R5, [R7]          ; R5 = MEM[R7]
+    ADD   R8, R5, R9        ; R8 = R5 + R9    (uses just-loaded R5)
 
-	// 4. Control Hazard: Branch over two instructions
-	B     skip
-NOP1:   ADD   R2, R3, R4 // (will be skipped; filler for branch delay)
-NOP2:   SUB   R5, R6, R7 // (will be skipped)
-skip:	MOV   R10, R11    // Branch target
+    ; (4) Control Hazard: Branch and flush pipeline
+    B     skip              ; Branch (skip next two instructions)
+NOP1: ADD   R2, R3, R4      ; Filler: Should be flushed if branch works
+NOP2: SUB   R5, R6, R7      ; Filler: Should be flushed
+skip: MOV   R10, R11        ; Branch target
 
-	// 5. No Data Dependency: Pipeline can proceed freely
-	ADD   R2, R3, R4
-	SUB   R5, R6, R7
+    ; (5) No data dependency -- pipeline flows freely
+    ADD   R2, R3, R4
+    SUB   R5, R6, R7
 
-	// 6. Multi-cycle Data Dependency: Dependent on MUL (should cause stall)
-	MUL   R4, R5, R6      // R4 = R5 * R6
-	ADD   R8, R4, R7      // R8 = R4 + R7 (must wait for R4 from MUL)
+    ; (6) Multi-cycle dependency (stalls until MUL completes)
+    MUL   R4, R5, R6        ; R4 = R5 * R6
+    ADD   R8, R4, R7        ; R8 = R4 + R7, Must wait for MUL R4
 
-	// End (Optional: Infinite Loop)
-done:   B done           // Infinite loop
+halt
+    B     halt
+
+; ------- <code memory (ROM mapped to DATA Memory) begins>
+    AREA    DATA, DATA, READWRITE, ALIGN=9
+
+addr1      DCD 0x00000810   ; Example memory address for LDR/STR
+addr2      DCD 0x00000820   ; Example memory address for STR
+addr3      DCD 0x00000830   ; Example memory address for LDR
+constant1   DCD 0x00000005   ; Sample data for R2/R3 etc.
+constant2   DCD 0x00000006
+constant3   DCD 0x00000007
+
+    END
