@@ -18,7 +18,7 @@ module Extend(
                 if (InstrImm[23]) // U=1 (Up/Positive)
                     ExtImm = {20'b0, InstrImm[11:0]};
                 else              // U=0 (Down/Negative) -> 2's Complement
-                   ExtImm = {20'hFFFFF, (~InstrImm[11:0]+1)};  // sign-extend---negative
+                   ExtImm = {20'hFFFFF, (InstrImm[11:0])};  // sign-extend---negative
             end
             
                 // 2'b10: Branch immediate                

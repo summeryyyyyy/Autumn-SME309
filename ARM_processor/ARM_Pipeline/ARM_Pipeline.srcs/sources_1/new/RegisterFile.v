@@ -16,7 +16,12 @@ module RegisterFile(
     // RegBank stores R0 through R14. 
     // R15 (PC) is stored externally and passed in as input.
     reg [31:0] RegBank[0:14]; 
-
+    integer i;
+    initial begin
+        for ( i = 0; i < 15; i = i + 1) begin
+            RegBank[i] = 32'b0;
+        end
+    end
     // =========================================================
     // READ OPERATION (Combinational)
     // =========================================================
