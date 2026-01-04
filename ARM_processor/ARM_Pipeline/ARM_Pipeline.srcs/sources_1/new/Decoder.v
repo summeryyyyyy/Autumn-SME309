@@ -149,21 +149,21 @@ module Decoder(
         endcase
     end
 
-    // =========================================================================
-    //            PC Logic
-    // =========================================================================
-    // PCS is 1 if:
-    // 1. It is a Branch instruction (B/BL)
-    // 2. It is a Data Processing writing to R15 (PC)
-    assign PCS = ((Rd == 4'd15) & RegW) | Branch;
+  
         // =========================================================================
         //            EARLY BTA & PC LOGIC
         // =========================================================================
         
         // 1. Detect Condition Code "AL" (Always / Unconditional)
         // Bits [31:28] are the Condition field. 1110 is "AL".
+          // PCS is 1 if:
+          // 1. It is a Branch instruction (B/BL)
+          // 2. It is a Data Processing writing to R15 (PC)
         wire CondAL;
         assign CondAL = (Instr[31:28] == 4'b1110);
+        
+        assign PCS = ((Rd == 4'd15) & RegW) | (Branch & ~CondAL );
+
     
         // 2. PCSrcD (Early BTA)
         // If it is a Branch instruction AND it is Unconditional, we take it NOW.
@@ -176,6 +176,6 @@ module Decoder(
         // 4. PCS (General PC Write)
         // This goes to ID/EX register to warn the Execute stage that PC was modified.
         // It includes Early Branches OR Late Register Writes (MOV PC, R14).
-        assign PCS = ((Rd == 4'd15) & RegW) | Branch;
+        //assign PCS = ((Rd == 4'd15) & RegW) | Branch;
    
 endmodule

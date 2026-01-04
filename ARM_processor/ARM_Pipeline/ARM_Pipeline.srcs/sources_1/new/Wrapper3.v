@@ -109,24 +109,26 @@ initial begin
     // Offset 1 Corrected
     INSTR_MEM[10] = 32'hEA000001; // B skip
     INSTR_MEM[11] = 32'hE081A002; // nop1 (Flushed)
-    INSTR_MEM[12] = 32'hE042B001; // nop2 (Flushed)
-
+    INSTR_MEM[12] = 32'hE042B001; // skipped
     // --- (5) No Dependency ---
     INSTR_MEM[13] = 32'hE1A0C004; // MOV R12, R4 -> 6
     
-    // FIX 1: Corrected Hex for ADD R1, R2, R3
     INSTR_MEM[14] = 32'hE0821003; // ADD R1, R2, R3 -> 17 (0x11)
     
     INSTR_MEM[15] = 32'hE0465007; // SUB R5, R6, R7 -> 0x81D
+    
+    
 
     // --- (6) Multi-Cycle ---
     INSTR_MEM[16] = 32'hE00D0392; // MUL R13, R2, R3 -> 66 (0x42)
     
+    INSTR_MEM[17] = 32'hE3A000AA;   // MOV   R0, #0xAA       R0 => 0xAA (170)
+    
     // FIX 2: Corrected Hex for ADD R14, R13, R2
-    INSTR_MEM[17] = 32'hE08DE002; // ADD R14, R13, R2 -> 72 (0x48)
+    INSTR_MEM[18] = 32'hE08DE002; // ADD R14, R13, R2 -> 72 (0x48)
 
     // Halt
-    INSTR_MEM[18] = 32'hEAFFFFFE; 
+    INSTR_MEM[19] = 32'hEAFFFFFE; 
 end
 
 //----------------------------------------------------------------
