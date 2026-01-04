@@ -32,7 +32,7 @@ module ARM(
     wire [31:0] RD1D, RD2D, PC_Plus_8D, InstrImmD, ExtImmD;
 
     // Execute
-    wire StallE, Real_StallE, FlushE;
+    wire  Real_StallE, FlushE;
     wire [1:0] ForwardAE, ForwardBE;
     reg [31:0] InstrE;
     reg PCSE, RegWE, MemWE, MemtoRegE, ALUSrcE, NoWriteE, M_StartE, MCycleOpE, M_WE;
@@ -67,24 +67,24 @@ module ARM(
     // ******************************************************
     
     // 1. Track the Destination of the running Multiplier
-    reg [3:0] PendingMulDest;
+    reg [3:0] M_WA3E;
     always @(posedge CLK) begin
-        if (Reset) PendingMulDest <= 0;
-        else if (M_StartE) PendingMulDest <= WA3E; // Capture destination when MUL starts
+        if (Reset) M_WA3E <= 0;
+        else if (M_StartE) M_WA3E <= WA3E; // Capture destination when MUL starts
     end
 
     // 2. Detect Completion (Falling Edge of Busy)
     reg M_Busy_Prev;
-    always @(posedge CLK) M_Busy_Prev <= M_BusyE;
-    wire Mul_Done_Pulse = (M_Busy_Prev && !M_BusyE); 
+    always @(negedge CLK) M_Busy_Prev <= M_BusyE;
+    wire Mul_Done = (M_Busy_Prev && !M_BusyE)? 1'b1: 1'b0; 
 
     // 3. Port Stealing (Structural Hazard Resolution)
     // When MUL finishes, we stall the whole pipeline for 1 cycle to let MUL write.
-    wire StructuralStall = Mul_Done_Pulse;
+    wire StructuralStall = Mul_Done ;
     
     assign Real_StallF = StallF || StructuralStall;
     assign Real_StallD = StallD || StructuralStall;
-    assign Real_StallE = StallE || StructuralStall;
+    assign Real_StallE = StructuralStall;
     assign Real_StallM = StructuralStall; // Freeze MEM
     assign Real_StallW = StructuralStall; // Freeze WB
 
@@ -94,7 +94,7 @@ module ARM(
 
     // --- FETCH ---
     wire [31:0] NextPC;
-    assign NextPC = (PCSrcE)       ? OpResultE :
+    assign NextPC = (PCSrcE=== 1'b1)       ? OpResultE :
                     (BranchTakenD) ? BranchTargetD :
                     PC_Plus_4F;
 
@@ -136,7 +136,9 @@ module ARM(
          .M_W(M_WD)
     );
 
-    assign RA1D = RegSrcD[2]? InstrD[11:8]: (RegSrcD[0]? 4'd15: InstrD[19:16]);
+    assign RA1D = RegSrcD[2]? InstrD[11:8]:
+                 RegSrcD[0]? 4'd15: 
+                 InstrD[19:16];
     assign RA2D = RegSrcD[1]? InstrD[15:12]: InstrD[3:0];
     assign WA3D = RegSrcD[2]? InstrD[19:16]: InstrD[15:12];
     assign PC_Plus_8D = PC_Plus_4F; 
@@ -144,9 +146,9 @@ module ARM(
     assign shControlD = InstrD[11:5];
     
     // -- Register File with Port Stealing --
-    wire [3:0]  Final_WA3 = Mul_Done_Pulse ? PendingMulDest : WA3W;
-    wire [31:0] Final_WD3 = Mul_Done_Pulse ? MCycleResultE  : ResultW;
-    wire        Final_WE3 = Mul_Done_Pulse ? 1'b1           : RegWriteW;
+    wire [3:0]  Final_WA3 = Mul_Done? M_WA3E : WA3W;
+    wire [31:0] Final_WD3 = (Mul_Done) ? MCycleResultE  : ResultW;
+    wire        Final_WE3 = StructuralStall ? 1'b1           : RegWriteW;
 
     RegisterFile RF1 (
         .CLK(CLK),
@@ -206,13 +208,16 @@ module ARM(
         .MemWrite(MemWriteE), 
         .M_Write(M_WriteE)
     );
-    // Assuming CondLogic handles PCSrc logic internally or via combination
-    // Re-add wire assignment if CondLogic doesn't output PCSrc:
+    //  CondLogic handles PCSrc logic internally or via combination
     assign PCSrcE = (CondLogic1.CondEx & PCSE); // Internal access or explicit output
 
     assign ShE = shControlE[1:0];
     assign Shamt5E = shControlE[6:2];
-    assign ShInE = ForwardBE[1]? OpResultM: (ForwardBE[0]? ResultW: RD2E);
+        // ShInE feeds the Shifter, which feeds ALU Input B
+    assign ShInE = (ForwardBE == 2'b11) ? MCycleResultE :
+                   (ForwardBE[1])       ? OpResultM :
+                   (ForwardBE[0])       ? ResultW : 
+                   RD2E;
     assign WriteDataE = ShInE;
 
     Shifter Shifter1(
@@ -222,7 +227,13 @@ module ARM(
     .ShOut(ShOutE)
     );
 
-    assign SrcAE = ForwardAE[1]? OpResultM: (ForwardAE[0]? ResultW: RD1E);
+    /*assign SrcAE = ForwardAE[1]? OpResultM: 
+                   (ForwardAE[0]? ResultW: 
+                   RD1E);*/
+    assign SrcAE = (ForwardAE == 2'b11) ? MCycleResultE :
+                   (ForwardAE[1])       ? OpResultM : 
+                   (ForwardAE[0])       ? ResultW : 
+                    RD1E;
     assign SrcBE = ALUSrcE? ExtImmE: ShOutE;
 
     ALU ALU1 (
@@ -244,18 +255,18 @@ module ARM(
     .Busy(M_BusyE)
     );   
 
-    // Note: MCycleResultE is NOT used here for OpResultE because it is written later asynchronously.
+    // MCycleResultE is NOT used here for OpResultE because it is written later asynchronously.
     // The MUL instruction continues as a Bubble, so we pass ALUResultE (which is garbage, but RegWrite will be masked).
     assign OpResultE = ALUResultE; 
 
     // EX/MEM Register
     always @(posedge CLK) begin
-        if (FlushM) begin
+        /*if (FlushM) begin
             InstrM <= 0;
             RegWriteM <= 0; MemWriteM <= 0; MemtoRegM <= 0;
             OpResultM <= 0; WriteDataM <= 0; RA2M <= 0; WA3M <= 0;
         end
-        else if (Real_StallM) begin
+        else*/ if (Real_StallM) begin
             // Hold State during Structural Stall
             InstrM <= InstrM; RegWriteM <= RegWriteM; MemWriteM <= MemWriteM; MemtoRegM <= MemtoRegM;
             OpResultM <= OpResultM; WriteDataM <= WriteDataM; RA2M <= RA2M; WA3M <= WA3M;
@@ -301,15 +312,20 @@ module ARM(
         .RA2D(RA2D),
         .RA1E(RA1E), 
         .RA2E(RA2E), 
+        
         .WA3E(WA3E),
         .MemtoRegE(MemtoRegE), 
         .RegWriteE(RegWriteE),
         .PCSrcD(BranchTakenD), 
         .PCSrcE(PCSrcE),
         
+        .MemWriteD(MemWD), 
+        .ALUSrcD(ALUSrcD), 
+
+        
         // Parallel MCycle Inputs
         .M_BusyE(M_BusyE),
-        .PendingMulDest(PendingMulDest), // Pass the tracked register
+        .M_WA3E(M_WA3E), // Pass the tracked register
         .M_StartE(M_StartE), 
 
         
@@ -324,11 +340,11 @@ module ARM(
         .StallF(StallF), 
         .StallD(StallD), 
         .FlushD(FlushD),
-        .StallE(StallE), 
+        //.StallE(StallE), 
         .FlushE(FlushE),
         .ForwardAE(ForwardAE), 
         .ForwardBE(ForwardBE),
-        .FlushM(FlushM), 
+      //  .FlushM(FlushM), 
         .ForwardM(ForwardM)
     );
 
