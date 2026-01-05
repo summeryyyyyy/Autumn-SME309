@@ -126,9 +126,9 @@ initial begin
     
     // FIX 2: Corrected Hex for ADD R14, R13, R2
     INSTR_MEM[18] = 32'hE08DE002; // ADD R14, R13, R2 -> 72 (0x48)
-
+INSTR_MEM[19] = 32'hE580E800; // STR R14, [R0, #0x800]
     // Halt
-    INSTR_MEM[19] = 32'hEAFFFFFE; 
+	INSTR_MEM[20] = 32'hEAFFFFFE; 
 end
 
 //----------------------------------------------------------------
@@ -200,7 +200,7 @@ ARM ARM1(
 // Data memory address decoding
 //----------------------------------------------------------------
 assign dec_DATA_CONST = (ALUResult < 32'h00000200) ? 1'b1 : 1'b0;
-assign dec_DATA_VAR			= (ALUResult >= 32'h00000800 && ALUResult <= 32'h000009FC) ? 1'b1 : 1'b0;
+	assign dec_DATA_VAR			= (ALUResult >= 32'h00000200 && ALUResult <= 32'h000009FC) ? 1'b1 : 1'b0;
 
 //----------------------------------------------------------------
 // Data memory read 1
