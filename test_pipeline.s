@@ -31,6 +31,7 @@ skip: MOV   R12, R4               ; R12 = 6 (from above)
 
     ; --- (6) Multi-cycle data dependency: Stalls for MUL result ---
     MUL   R13, R2, R3             ; R13 = 6 * 11 = 66
+    STR R14, [R0, #800]           ; 
     ADD   R14, R13, R2            ; R14 = 66 + 6 = 72
 
 halt
