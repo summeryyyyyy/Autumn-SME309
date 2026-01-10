@@ -16,10 +16,7 @@ module id_ex(
     input [4: 0] id_rs1,
     input [4: 0] id_rs2,
     input id_lui,
-
-    // Prediction
-    input id_pred_taken,
-    output reg ex_pred_taken,
+    input id_isBranchInstr,
     
     output reg [4: 0] ex_aluc,
     output reg ex_aluOut_WB_memOut,
@@ -35,7 +32,8 @@ module id_ex(
     output reg [4: 0] ex_rd,
     output reg [4: 0] ex_rs1,
     output reg [4: 0] ex_rs2,
-    output reg ex_lui
+    output reg ex_lui,
+    output reg ex_isBranchInstr
 );
 
 always @(posedge clk) begin
@@ -56,7 +54,7 @@ always @(posedge clk) begin
         ex_rs1 = 5'd0;
         ex_rs2 = 5'd0;
         ex_lui = 1;
-        ex_pred_taken = 1'b0;
+        ex_isBranchInstr = 0;
     end else begin
         ex_aluc <= id_aluc;
         ex_aluOut_WB_memOut <= id_aluOut_WB_memOut;
@@ -74,7 +72,7 @@ always @(posedge clk) begin
         ex_rs1 <= id_rs1;
         ex_rs2 <= id_rs2;
         ex_lui <= id_lui;
-        ex_pred_taken <= id_pred_taken;
+        ex_isBranchInstr <= id_isBranchInstr;
     end
     
 end

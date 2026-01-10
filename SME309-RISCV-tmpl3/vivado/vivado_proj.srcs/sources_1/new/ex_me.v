@@ -13,11 +13,9 @@ module ex_me(
     input [31: 0] ex_rs2Data,
     input [4: 0] ex_rd,
     input [4: 0] ex_rs2,
-
-    // Prediction
-    input ex_pred_taken,
-    output reg me_pred_taken,
-
+    input ex_isBranchInstr,
+    input [31:0] ex_pc,
+    
     output reg me_aluOut_WB_memOut,
     output reg me_writeReg,
     output reg [1: 0] me_writeMem,
@@ -29,14 +27,16 @@ module ex_me(
     output reg [31: 0] me_outAlu,
     output reg [31: 0] me_rs2Data,
     output reg [4: 0] me_rd,
-    output reg [4: 0] me_rs2
+    output reg [4: 0] me_rs2,
+    output reg me_isBranchInstr,
+    output reg [31:0] me_pc
 );
 
 always @(posedge clk) begin
     if(rst || flush) begin
         me_aluOut_WB_memOut = 1'b0;
         me_writeReg = 1'b1;
-        me_writeMem = 2'b00;
+        me_writeMem = 2'b11;
         me_readMem = 3'b000;
         me_pcImm_NEXTPC_rs1Imm = 2'b00;
         me_conditionBranch = 1'b0;
@@ -46,7 +46,8 @@ always @(posedge clk) begin
         me_rs2Data = 32'd0;
         me_rd = 5'd0;
         me_rs2 = 5'd0;
-        me_pred_taken = 1'b0;
+        me_isBranchInstr = 0;
+        me_pc = 0;
     end else begin
         me_aluOut_WB_memOut <= ex_aluOut_WB_memOut;
         me_writeReg <= ex_writeReg;
@@ -60,7 +61,8 @@ always @(posedge clk) begin
         me_rs2Data <= ex_rs2Data;
         me_rd <= ex_rd;
         me_rs2 <= ex_rs2;
-        me_pred_taken <= ex_pred_taken;
+        me_isBranchInstr <= ex_isBranchInstr;
+        me_pc <= ex_pc;
     end
     
 end

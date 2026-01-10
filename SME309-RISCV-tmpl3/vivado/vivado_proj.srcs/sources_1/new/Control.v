@@ -11,11 +11,13 @@ module Control(
     output reg [2: 0] read_mem,
     output reg [2: 0] extOP,
     output reg [1: 0] pcImm_NEXTPC_rs1Imm,
-    output reg lui
+    output reg lui,
+    output reg a
 );
 
 always @(*) begin
     lui = 0;
+    a = 0;//俺的分支预测
     write_mem = 2'b11;//修bug,不知道作者在瞎改啥，为啥不直接输出呢，无语
     case (opcode)
         // lui
@@ -65,6 +67,7 @@ always @(*) begin
         end
         // B型指令
         7'b1100011:begin
+            a = 1;
             write_reg = 0;
             aluOut_WB_memOut = 0;
             rs1Data_EX_PC = 0;
