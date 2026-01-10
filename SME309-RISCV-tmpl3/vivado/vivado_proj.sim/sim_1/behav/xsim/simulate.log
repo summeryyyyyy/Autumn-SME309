@@ -1,0 +1,10 @@
+Vivado Simulator 2017.4
+Time resolution is 1 ps
+WARNING: This core is supplied with a behavioral model. To model cycle-accurate behavior you must run timing simulation.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module tb_Top.dut.u_benchmark.dram_driver_inst.Mem_DRAM.inst.native_mem_module.blk_mem_gen_v8_4_1_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+save to testbench.wave
+Warning : input CLKIN1 period and attribute CLKIN1_PERIOD on PLLE2_ADV instance tb_Top.dut.pll_inst.inst.plle2_adv_inst are not same.
+$finish called at time : 100010 ns : File "D:/Vivado/code/SME309-RISCV-tmpl2/sim/tb_top.v" Line 32
+$finish called at time : 100511 ns : File "D:/Vivado/code/SME309-RISCV-tmpl2/sim/tb_top.v" Line 51

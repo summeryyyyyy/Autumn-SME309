@@ -1,0 +1,322 @@
+Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
+| Date         : Thu Jan  8 07:41:47 2026
+| Host         : Summer running 64-bit major release  (build 9200)
+| Command      : report_methodology -file top_methodology_drc_routed.rpt -pb top_methodology_drc_routed.pb -rpx top_methodology_drc_routed.rpx
+| Design       : top
+| Device       : xc7a100tcsg324-1
+| Speed File   : -1
+| Design State : Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Report Methodology
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: design_1
+      Design limits: <entire design considered>
+             Max violations: <unlimited>
+             Violations found: 57
++-----------+----------+------------------------------------------------+------------+
+| Rule      | Severity | Description                                    | Violations |
++-----------+----------+------------------------------------------------+------------+
+| TIMING-6  | Warning  | No common primary clock between related clocks | 6          |
+| TIMING-14 | Warning  | LUT on the clock tree                          | 1          |
+| TIMING-20 | Warning  | Non-clocked latch                              | 50         |
++-----------+----------+------------------------------------------------+------------+
+
+2. REPORT DETAILS
+-----------------
+TIMING-6#1 Warning
+No common primary clock between related clocks  
+The clocks clk_out1_pll and clk_out1_pll_1 are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out1_pll] -to [get_clocks clk_out1_pll_1]
+Related violations: <none>
+
+TIMING-6#2 Warning
+No common primary clock between related clocks  
+The clocks clk_out1_pll_1 and clk_out1_pll are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out1_pll_1] -to [get_clocks clk_out1_pll]
+Related violations: <none>
+
+TIMING-6#3 Warning
+No common primary clock between related clocks  
+The clocks clk_out2_pll and clk_out1_pll_1 are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out2_pll] -to [get_clocks clk_out1_pll_1]
+Related violations: <none>
+
+TIMING-6#4 Warning
+No common primary clock between related clocks  
+The clocks clk_out2_pll and clk_out2_pll_1 are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out2_pll] -to [get_clocks clk_out2_pll_1]
+Related violations: <none>
+
+TIMING-6#5 Warning
+No common primary clock between related clocks  
+The clocks clk_out2_pll_1 and clk_out1_pll are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out2_pll_1] -to [get_clocks clk_out1_pll]
+Related violations: <none>
+
+TIMING-6#6 Warning
+No common primary clock between related clocks  
+The clocks clk_out2_pll_1 and clk_out2_pll are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out2_pll_1] -to [get_clocks clk_out2_pll]
+Related violations: <none>
+
+TIMING-14#1 Warning
+LUT on the clock tree  
+The LUT n_0_1457_BUFG_inst_i_1 has been found on the clock tree. Run opt_design to optimize the clock trees, then re-run report_methodology. If LUT(s) are still present in the clock trees, modify the RTL or the synthesis options accordingly to move the clock gating logic to dedicated clock enable resources. Keep in mind that post-opt_design database cannot be used for pin-planning tasks
+Related violations: <none>
+
+TIMING-20#1 Warning
+Non-clocked latch  
+The latch u_cpu/Control/aluOut_WB_memOut_reg cannot be properly analyzed as its control pin u_cpu/Control/aluOut_WB_memOut_reg/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#2 Warning
+Non-clocked latch  
+The latch u_cpu/Control/aluc_reg[0] cannot be properly analyzed as its control pin u_cpu/Control/aluc_reg[0]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#3 Warning
+Non-clocked latch  
+The latch u_cpu/Control/aluc_reg[1] cannot be properly analyzed as its control pin u_cpu/Control/aluc_reg[1]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#4 Warning
+Non-clocked latch  
+The latch u_cpu/Control/aluc_reg[2] cannot be properly analyzed as its control pin u_cpu/Control/aluc_reg[2]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#5 Warning
+Non-clocked latch  
+The latch u_cpu/Control/aluc_reg[3] cannot be properly analyzed as its control pin u_cpu/Control/aluc_reg[3]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#6 Warning
+Non-clocked latch  
+The latch u_cpu/Control/aluc_reg[4] cannot be properly analyzed as its control pin u_cpu/Control/aluc_reg[4]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#7 Warning
+Non-clocked latch  
+The latch u_cpu/Control/extOP_reg[0] cannot be properly analyzed as its control pin u_cpu/Control/extOP_reg[0]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#8 Warning
+Non-clocked latch  
+The latch u_cpu/Control/extOP_reg[1] cannot be properly analyzed as its control pin u_cpu/Control/extOP_reg[1]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#9 Warning
+Non-clocked latch  
+The latch u_cpu/Control/extOP_reg[2] cannot be properly analyzed as its control pin u_cpu/Control/extOP_reg[2]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#10 Warning
+Non-clocked latch  
+The latch u_cpu/Control/pcImm_NEXTPC_rs1Imm_reg[0] cannot be properly analyzed as its control pin u_cpu/Control/pcImm_NEXTPC_rs1Imm_reg[0]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#11 Warning
+Non-clocked latch  
+The latch u_cpu/Control/pcImm_NEXTPC_rs1Imm_reg[1] cannot be properly analyzed as its control pin u_cpu/Control/pcImm_NEXTPC_rs1Imm_reg[1]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#12 Warning
+Non-clocked latch  
+The latch u_cpu/Control/read_mem_reg[0] cannot be properly analyzed as its control pin u_cpu/Control/read_mem_reg[0]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#13 Warning
+Non-clocked latch  
+The latch u_cpu/Control/read_mem_reg[1] cannot be properly analyzed as its control pin u_cpu/Control/read_mem_reg[1]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#14 Warning
+Non-clocked latch  
+The latch u_cpu/Control/read_mem_reg[2] cannot be properly analyzed as its control pin u_cpu/Control/read_mem_reg[2]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#15 Warning
+Non-clocked latch  
+The latch u_cpu/Control/rs1Data_EX_PC_reg cannot be properly analyzed as its control pin u_cpu/Control/rs1Data_EX_PC_reg/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#16 Warning
+Non-clocked latch  
+The latch u_cpu/Control/rs2Data_EX_imm32_4_reg[0] cannot be properly analyzed as its control pin u_cpu/Control/rs2Data_EX_imm32_4_reg[0]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#17 Warning
+Non-clocked latch  
+The latch u_cpu/Control/rs2Data_EX_imm32_4_reg[1] cannot be properly analyzed as its control pin u_cpu/Control/rs2Data_EX_imm32_4_reg[1]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#18 Warning
+Non-clocked latch  
+The latch u_cpu/Control/write_reg_reg cannot be properly analyzed as its control pin u_cpu/Control/write_reg_reg/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#19 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[0] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[0]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#20 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[10] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[10]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#21 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[11] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[11]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#22 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[12] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[12]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#23 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[13] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[13]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#24 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[14] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[14]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#25 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[15] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[15]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#26 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[16] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[16]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#27 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[17] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[17]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#28 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[18] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[18]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#29 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[19] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[19]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#30 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[1] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[1]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#31 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[20] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[20]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#32 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[21] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[21]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#33 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[22] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[22]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#34 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[23] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[23]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#35 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[24] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[24]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#36 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[25] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[25]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#37 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[26] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[26]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#38 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[27] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[27]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#39 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[28] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[28]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#40 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[29] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[29]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#41 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[2] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[2]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#42 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[30] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[30]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#43 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[31] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[31]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#44 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[3] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[3]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#45 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[4] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[4]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#46 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[5] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[5]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#47 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[6] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[6]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#48 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[7] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[7]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#49 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[8] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[8]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#50 Warning
+Non-clocked latch  
+The latch u_cpu/Extend/imm_32_reg[9] cannot be properly analyzed as its control pin u_cpu/Extend/imm_32_reg[9]/G is not reached by a timing clock
+Related violations: <none>
+
+

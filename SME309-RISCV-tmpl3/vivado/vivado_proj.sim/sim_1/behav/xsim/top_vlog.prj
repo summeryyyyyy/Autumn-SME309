@@ -1,0 +1,24 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../vivado_proj.srcs/sources_1/ip/pll" \
+"../../../../vivado_proj.srcs/sources_1/ip/DRAM/sim/DRAM.v" \
+"../../../../vivado_proj.srcs/sources_1/ip/IROM/sim/IROM.v" \
+"../../../../vivado_proj.srcs/sources_1/ip/pll/pll_clk_wiz.v" \
+"../../../../vivado_proj.srcs/sources_1/ip/pll/pll.v" \
+"../../../../vivado_proj.srcs/sources_1/new/Alu.v" \
+"../../../../../rtl/cpu/CPU_TOP.v" \
+"../../../../vivado_proj.srcs/sources_1/new/Control.v" \
+"../../../../vivado_proj.srcs/sources_1/new/Decoder.v" \
+"../../../../vivado_proj.srcs/sources_1/new/Extend.v" \
+"../../../../vivado_proj.srcs/sources_1/new/Memdata.v" \
+"../../../../vivado_proj.srcs/sources_1/new/ProgramCounter.v" \
+"../../../../vivado_proj.srcs/sources_1/new/RegisterFile.v" \
+"../../../../../rtl/benchmark.v" \
+"../../../../../rtl/dram_driver.v" \
+"../../../../../rtl/seven_seg.v" \
+"../../../../top.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

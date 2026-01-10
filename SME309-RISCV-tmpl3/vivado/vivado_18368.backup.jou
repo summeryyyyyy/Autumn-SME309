@@ -1,0 +1,64 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Thu Jan  8 02:48:07 2026
+# Process ID: 18368
+# Current directory: D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent32736 D:\Vivado\code\SME309-RISCV-tmpl - 副本\vivado\vivado_proj.xpr
+# Log file: D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado/vivado.log
+# Journal file: D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project {D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado/vivado_proj.xpr}
+update_compile_order -fileset sources_1
+close [ open {D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado/vivado_proj.srcs/sources_1/new/ex_me.v} w ]
+add_files {{D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado/vivado_proj.srcs/sources_1/new/ex_me.v}}
+update_compile_order -fileset sources_1
+close [ open {D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado/vivado_proj.srcs/sources_1/new/me_wb.v} w ]
+add_files {{D:/Vivado/code/SME309-RISCV-tmpl - 副本/vivado/vivado_proj.srcs/sources_1/new/me_wb.v}}
+update_compile_order -fileset sources_1
+launch_simulation
+source tb_Top.tcl
+run 1000 ns
+relaunch_sim
+close_sim
+launch_simulation
+source tb_Top.tcl
+relaunch_sim
+run 1000 ns
+relaunch_sim
+run 1000 ns
+relaunch_sim
+run 1000 ns
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+run 1000 ns
+run 1000 ns
+run 1000 ns
+run 1000 ns
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+relaunch_sim
+run 1000 ns
+run 1000 ns
+relaunch_sim
+relaunch_sim
+run 1000 ns
+run 1000 ns
+run 1000 ns
+relaunch_sim
+run 1000 ns
+run 1000 ns
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+run 1000 ns
+run 1000 ns
+run 1000 ns
+close_sim

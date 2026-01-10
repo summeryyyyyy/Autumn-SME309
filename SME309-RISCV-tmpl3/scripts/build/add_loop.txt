@@ -1,0 +1,24 @@
+
+build\add_loop.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00100293          	li	t0,1
+   4:	00000313          	li	t1,0
+   8:	3e800393          	li	t2,1000
+   c:	90000e37          	lui	t3,0x90000
+  10:	000e0e13          	mv	t3,t3
+  14:	ffff0eb7          	lui	t4,0xffff0
+
+00000018 <loop>:
+  18:	0053c863          	blt	t2,t0,28 <done>
+  1c:	00530333          	add	t1,t1,t0
+  20:	00128293          	addi	t0,t0,1
+  24:	ff5ff06f          	j	18 <loop>
+
+00000028 <done>:
+  28:	006e2023          	sw	t1,0(t3) # 90000000 <done+0x8fffffd8>
+  2c:	01ce2623          	sw	t3,12(t3)
+  30:	ff9ff06f          	j	28 <done>
